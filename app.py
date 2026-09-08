@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import streamlit as st
+from datetime import datetime
 
 # กำหนด Path สำหรับเก็บไฟล์ข้อมูลในฮาร์ดดิสก์
 DATA_DIR = "data"
@@ -33,22 +34,18 @@ def init_default_data():
       {"วันที่ตรวจ": "26/10/2025 19:13:00", "หมวดหมู่": "3. การทำงานของตับ (Liver Function)", "รายการตรวจ": "Direct Bilirubin", "ค่าที่วัดได้": "0.12", "หน่วย": "mg/dL", "สถานะ": "ปกติ"},
 
       # --- ผลตรวจใหม่วันที่ 22/06/2026 จากโรงพยาบาลลานนา ---
-      # 1. ไต
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "1. การทำงานของไต (Kidney Function)", "รายการตรวจ": "Blood Urea Nitrogen (BUN)", "ค่าที่วัดได้": "75", "หน่วย": "mg/dL", "สถานะ": "ผิดปกติ / สูง"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "1. การทำงานของไต (Kidney Function)", "รายการตรวจ": "Creatinine", "ค่าที่วัดได้": "3.3", "หน่วย": "mg/dL", "สถานะ": "ผิดปกติ / สูง"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "1. การทำงานของไต (Kidney Function)", "รายการตรวจ": "Estimated Glomerular Filtration Rate (eGFR)", "ค่าที่วัดได้": "20", "หน่วย": "mL/min/1.73m²", "สถานะ": "ต่ำ"},
-      # 2. เกลือแร่
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "2. เกลือแร่ในเลือด (Electrolytes)", "รายการตรวจ": "Sodium (Na)", "ค่าที่วัดได้": "139", "หน่วย": "mmol/L", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "2. เกลือแร่ในเลือด (Electrolytes)", "รายการตรวจ": "Potassium (K)", "ค่าที่วัดได้": "5.0", "หน่วย": "mmol/L", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "2. เกลือแร่ในเลือด (Electrolytes)", "รายการตรวจ": "Chloride (Cl)", "ค่าที่วัดได้": "107", "หน่วย": "mmol/L", "สถานะ": "ผิดปกติ / สูง"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "2. เกลือแร่ในเลือด (Electrolytes)", "รายการตรวจ": "Bicarbonate (CO2)", "ค่าที่วัดได้": "19", "หน่วย": "mmol/L", "สถานะ": "ต่ำ"},
-      # 4. ไขมันและเบาหวาน
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "4. ไขมันและเบาหวานในเลือด (Lipid & Glucose)", "รายการตรวจ": "Cholesterol (Total)", "ค่าที่วัดได้": "122", "หน่วย": "mg/dL", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "4. ไขมันและเบาหวานในเลือด (Lipid & Glucose)", "รายการตรวจ": "Triglycerides", "ค่าที่วัดได้": "97", "หน่วย": "mg/dL", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "4. ไขมันและเบาหวานในเลือด (Lipid & Glucose)", "รายการตรวจ": "HDL Cholesterol", "ค่าที่วัดได้": "42", "หน่วย": "mg/dL", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "4. ไขมันและเบาหวานในเลือด (Lipid & Glucose)", "รายการตรวจ": "LDL Cholesterol", "ค่าที่วัดได้": "61.6", "หน่วย": "mg/dL", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "4. ไขมันและเบาหวานในเลือด (Lipid & Glucose)", "รายการตรวจ": "Fast Blood Sugar (FBS)", "ค่าที่วัดได้": "177", "หน่วย": "mg/dL", "สถานะ": "ผิดปกติ / สูง"},
-      # 5. ความสมบูรณ์ของเม็ดเลือด (CBC)
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "5. ความสมบูรณ์ของเม็ดเลือด (CBC)", "รายการตรวจ": "Hemoglobin (Hb)", "ค่าที่วัดได้": "8.2", "หน่วย": "g/dL", "สถานะ": "ต่ำ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "5. ความสมบูรณ์ของเม็ดเลือด (CBC)", "รายการตรวจ": "Hematocrit (Hct)", "ค่าที่วัดได้": "24", "หน่วย": "%", "สถานะ": "ต่ำ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "5. ความสมบูรณ์ของเม็ดเลือด (CBC)", "รายการตรวจ": "White Blood Cell Count (WBC)", "ค่าที่วัดได้": "8290", "หน่วย": "cells/cu.mm.", "สถานะ": "ปกติ"},
@@ -63,9 +60,7 @@ def init_default_data():
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "5. ความสมบูรณ์ของเม็ดเลือด (CBC)", "รายการตรวจ": "RDW cv", "ค่าที่วัดได้": "13.8", "หน่วย": "%", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "5. ความสมบูรณ์ของเม็ดเลือด (CBC)", "รายการตรวจ": "RBC Morphology", "ค่าที่วัดได้": "Normal", "หน่วย": "", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "5. ความสมบูรณ์ของเม็ดเลือด (CBC)", "รายการตรวจ": "WBC Morphology", "ค่าที่วัดได้": "Normal", "หน่วย": "", "สถานะ": "ปกติ"},
-      # 7. เซโรวิทยา / ไวรัสตับอักเสบ
       {"วันที่ตรวจ": "22/06/2026 09:21:00", "หมวดหมู่": "7. โรคติดเชื้อและภูมิคุ้มกัน (Serology)", "รายการตรวจ": "Hbs Antigen (HBsAg)", "ค่าที่วัดได้": "Negative(0.19)", "หน่วย": "", "สถานะ": "ปกติ"},
-      # 6. ผลตรวจปัสสาวะ (Urinalysis)
       {"วันที่ตรวจ": "22/06/2026 09:36:00", "หมวดหมู่": "6. ผลตรวจปัสสาวะ (Urinalysis)", "รายการตรวจ": "Color", "ค่าที่วัดได้": "Yellow", "หน่วย": "", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:36:00", "หมวดหมู่": "6. ผลตรวจปัสสาวะ (Urinalysis)", "รายการตรวจ": "Transparency (urine)", "ค่าที่วัดได้": "Clear", "หน่วย": "", "สถานะ": "ปกติ"},
       {"วันที่ตรวจ": "22/06/2026 09:36:00", "หมวดหมู่": "6. ผลตรวจปัสสาวะ (Urinalysis)", "รายการตรวจ": "Specific gravity (urine)", "ค่าที่วัดได้": "1.009", "หน่วย": "", "สถานะ": "ปกติ"},
@@ -86,7 +81,7 @@ def init_default_data():
 
 def load_data():
   if os.path.exists(DATA_FILE):
-    df = pd.read_csv(DATA_FILE, dtype=str) # อ่านเป็น string ทั้งหมดเพื่อป้องกันค่าตัวหนังสือเพี้ยน
+    df = pd.read_csv(DATA_FILE, dtype=str)
     if "วันที่ตรวจ" in df.columns:
       df["วันที่ตรวจ_dt"] = pd.to_datetime(df["วันที่ตรวจ"], errors="coerce")
       df = df.sort_values(by="วันที่ตรวจ_dt", ascending=True).reset_index(drop=True)
@@ -183,7 +178,7 @@ if "test_database" not in st.session_state:
 
 test_database = st.session_state["test_database"]
 
-# --- ส่วนรับข้อมูลด้านซ้าย (Sidebar) ---
+# --- ส่วนรับข้อมูลด้านซ้าย (Sidebar) ปกติ ---
 st.sidebar.header("📝 โหมดบันทึกผลตรวจยกชุด (รายหมวด)")
 
 check_date = st.sidebar.date_input("วันที่ตรวจ (ใช้ร่วมกันทั้งหมดในรอบนี้)")
@@ -211,8 +206,6 @@ if st.sidebar.button("💾 บันทึกข้อมูลทั้งห�
   for test_name, val in batch_inputs.items():
     if val.strip() != "":
       info = test_database[selected_category][test_name]
-      
-      # วิเคราะห์สถานะเบื้องต้น หากเป็นตัวเลขให้เช็คช่วง Min-Max ถ้าเป็นตัวหนังสือให้ระบุตามสภาพ
       status = "ปกติ"
       try:
         num_val = float(val)
@@ -224,7 +217,6 @@ if st.sidebar.button("💾 บันทึกข้อมูลทั้งห�
           elif num_val > max_v:
             status = "ผิดปกติ / สูง"
       except ValueError:
-        # กรณีเป็นข้อความ เช่น Negative, Normal ให้ถือว่าปกติ ยกเว้นมีคำว่า Positive หรือ 2+
         if "positive" in val.lower() or "+" in val:
           status = "ผิดปกติ / สูง"
         else:
@@ -248,24 +240,24 @@ if st.sidebar.button("💾 บันทึกข้อมูลทั้งห�
   else:
     st.sidebar.warning("⚠️ กรุณากรอกค่าผลตรวจอย่างน้อย 1 รายการ")
 
-# --- ส่วนเพิ่มรายการตรวจใหม่ ---
+# --- ส่วนเพิ่มรายการตรวจใหม่ใน Sidebar ---
 st.sidebar.markdown("---")
-st.sidebar.subheader("➕ เพิ่มรายการตรวจใหม่หรือหมวดหมู่ใหม่")
+st.sidebar.subheader("➕ เพิ่มรายการตรวจใหม่")
 with st.sidebar.form("add_test_form"):
-  new_cat = st.selectbox("เลือกหมวดหมู่ที่จะเพิ่ม", list(test_database.keys()))
+  new_cat = st.selectbox("เลือกหมวดหมู่", list(test_database.keys()))
   new_tname = st.text_input("ชื่อรายการตรวจใหม่")
-  new_unit = st.text_input("หน่วย (เช่น mg/dL, cells/HPF)")
-  c_min = st.number_input("ค่าปกติขั้นต่ำ (Min)", value=0.0, format="%.2f")
-  c_max = st.number_input("ค่าปกติขั้นสูง (Max)", value=100.0, format="%.2f")
+  new_unit = st.text_input("หน่วย (เช่น mg/dL)")
+  c_min = st.number_input("ค่าขั้นต่ำ (Min)", value=0.0, format="%.2f")
+  c_max = st.number_input("ค่าขั้นสูง (Max)", value=100.0, format="%.2f")
   
-  submitted = st.form_submit_button("➕ บันทึกรายการตรวจใหม่ลงระบบ")
+  submitted = st.form_submit_button("➕ บันทึกรายการตรวจใหม่")
   if submitted:
     if new_tname:
       test_database[new_cat][new_tname] = {"unit": new_unit, "min": c_min, "max": c_max}
-      st.success(f"เพิ่มรายการ '{new_tname}' สำเร็จแล้ว!")
+      st.success(f"เพิ่มรายการ '{new_tname}' สำเร็จ!")
       st.rerun()
     else:
-      st.error("กรุณากรอกชื่อรายการตรวจครับ")
+      st.error("กรุณากรอกชื่อรายการตรวจ")
 
 # --- ส่วนแสดงผลข้อมูลหลักด้านขวา ---
 col1, col2, col3 = st.columns(3)
@@ -287,7 +279,6 @@ if not df.empty:
   chart_df["วันที่ตรวจ_dt"] = pd.to_datetime(chart_df["วันที่ตรวจ"], errors="coerce")
   chart_df = chart_df.sort_values("วันที่ตรวจ_dt")
 
-  # กรองเฉพาะแถวที่ค่าที่วัดได้เป็นตัวเลขเพื่อนำไปพล็อตตารางกราฟเส้น
   if len(chart_df) > 0:
     numeric_chart_df = chart_df.copy()
     numeric_chart_df["ค่าตัวเลข"] = pd.to_numeric(numeric_chart_df["ค่าที่วัดได้"], errors="coerce")
@@ -343,3 +334,35 @@ if not df.empty:
     st.rerun()
 else:
   st.info("ยังไม่มีข้อมูลในระบบ")
+
+# --- [ย้ายมาไว้ด้านขวาล่างสุดของหน้าเว็บ] ส่วนจัดการระบบ Backup และ Restore ---
+st.markdown("---")
+st.subheader("🛡️ ระบบสำรองและกู้คืนข้อมูล (Backup & Restore)")
+col_bk1, col_bk2 = st.columns(2)
+
+with col_bk1:
+  st.markdown("**1. ดาวน์โหลดข้อมูลเก็บไว้ในเครื่อง**")
+  if not df.empty:
+    csv_data = df.to_csv(index=False, encoding="utf-8-sig").encode("utf-8-sig")
+    st.download_button(
+        label="📥 ดาวน์โหลดไฟล์ Backup (CSV)",
+        data=csv_data,
+        file_name=f"health_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+        mime="text/csv",
+        help="คลิกเพื่อเซฟไฟล์ข้อมูลทั้งหมดเก็บไว้ในเครื่อง"
+    )
+  else:
+    st.info("ยังไม่มีข้อมูลให้ดาวน์โหลด")
+
+with col_bk2:
+  st.markdown("**2. กู้คืนข้อมูลจากไฟล์ CSV เก่า**")
+  uploaded_file = st.file_uploader("เลือกไฟล์ CSV สำหรับกู้คืน", type=["csv"], key="restore_uploader")
+  if uploaded_file is not None:
+    if st.button("🔄 ยืนยันการกู้คืนข้อมูลทับระบบเดิม"):
+      try:
+        restored_df = pd.read_csv(uploaded_file, dtype=str)
+        save_data(restored_df)
+        st.success("กู้คืนข้อมูลสำเร็จ! ระบบกำลังรีโหลด...")
+        st.rerun()
+      except Exception as e:
+        st.error(f"เกิดข้อผิดพลาด: {e}")
