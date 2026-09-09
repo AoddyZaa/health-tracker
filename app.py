@@ -356,7 +356,7 @@ with col_bk1:
 
 with col_bk2:
   st.markdown("**2. กู้คืนข้อมูลจากไฟล์ CSV เก่า**")
-  uploaded_file = st.file_uploader("เลือกไฟล์ CSV สำหรับกู้คืน", type=["csv"], key="restore_uploader")
+  uploaded_file = st.file_uploader("📂 เลือกไฟล์ CSV หรือ TXT สำหรับกู้คืนข้อมูล", type=["csv", "txt"], key="restore_csv")
   if uploaded_file is not None:
     if st.button("🔄 ยืนยันการกู้คืนข้อมูลทับระบบเดิม"):
       try:
